@@ -118,19 +118,25 @@
   flex-shrink: 0;
 }
 
+.logs-header .mod-log-panel-header {
+  padding-left: 0.45rem;
+  padding-right: 0.45rem;
+}
+
 /* ── Log table ── */
 
 .logs-table-wrap {
   flex: 1;
   min-height: 0;
   overflow: auto;
-  padding: 0.55rem 1rem 1rem;
+  padding: 0 0 1rem;
   background: var(--panel);
 }
 
 .logs-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: separate;
+  border-spacing: 0;
   font-weight: var(--font-weight-regular);
   font-family: ui-monospace, 'Cascadia Code', monospace;
 }
@@ -143,6 +149,11 @@
   vertical-align: top;
 }
 
+.logs-table thead {
+  position: relative;
+  z-index: 2;
+}
+
 .logs-table th {
   position: sticky;
   top: 0;
@@ -152,7 +163,7 @@
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--plumbob-deep);
-  z-index: 1;
+  z-index: 2;
   border-bottom: 0.0625rem solid var(--border);
 }
 
@@ -170,35 +181,24 @@
 
 .cell-level {
   width: 4rem;
-  font-weight: var(--font-weight-strong);
+  white-space: nowrap;
   text-transform: uppercase;
-  letter-spacing: 0.04em;
-  padding: 0.12rem 0.4rem;
-  border-radius: var(--radius-full);
-  border: 0.0625rem solid var(--border);
 }
 
 tr[data-level='debug'] .cell-level {
   color: var(--muted);
-  background: var(--panel-shade);
 }
 
 tr[data-level='info'] .cell-level {
   color: var(--tag-age-fg);
-  border-color: var(--tag-age-border);
-  background: var(--tag-age-tint);
 }
 
 tr[data-level='error'] .cell-level {
   color: var(--red);
-  border-color: var(--red);
-  background: rgba(196, 74, 74, 0.12);
 }
 
 tr[data-level='warn'] .cell-level {
   color: var(--warn);
-  border-color: var(--tag-npc-border);
-  background: var(--warn-bg);
 }
 
 .cell-key {

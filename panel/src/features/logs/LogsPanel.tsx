@@ -1,10 +1,12 @@
 import {
   useCallback,
   useEffect,
+  useLayoutEffect,
   useMemo,
   useRef,
   useState,
   type PointerEvent,
+  type UIEvent,
 } from 'react'
 import {
   ActionButton,
@@ -29,6 +31,15 @@ const SHEET_DRAG_COLLAPSE_EPS_REM = 0.125
 
 /** Collapse dock when viewport height crosses down through this value (edge-triggered; avoids instant re-close after tray open on short viewports). */
 const DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX = 520
+
+/** Distance from the bottom of the log scroller to still count as “at bottom” for live follow. */
+const LOG_SCROLL_STICK_BOTTOM_PX = 48
+
+function scrollWrapIsNearBottom(el: HTMLDivElement): boolean {
+  return (
+    el.scrollHeight - el.scrollTop - el.clientHeight <= LOG_SCROLL_STICK_BOTTOM_PX
+  )
+}
 
 function rootFontPx(): number {
   if (typeof document === 'undefined') {
@@ -71,18 +82,20 @@ export default function LogsPanel() {
   const { entries, append, clear } = useInMemoryLogs()
   useWsLogStream(append)
 
-  const [dockOpen, setDockOpen] = useState(() => {
-    if (typeof window === 'undefined') {
-      return true
-    }
-    return window.innerHeight > DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX
-  })
+  const [dockOpen, setDockOpen] = useState(false)
   const [sheetHeightRem, setSheetHeightRem] = useState(DEFAULT_SHEET_REM)
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
   const dragRef = useRef<{ startY: number; startH: number } | null>(null)
+  const tableWrapRef = useRef<HTMLDivElement | null>(null)
+  /** When true, new rows scroll the table to the end; scrolling up clears this until the user nears the bottom again. */
+  const stickToBottomRef = useRef(true)
   const viewportHRef = useRef(
     typeof window === 'undefined' ? DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX + 1 : window.innerHeight,
   )
+
+  const onTableWrapScroll = useCallback((e: UIEvent<HTMLDivElement>) => {
+    stickToBottomRef.current = scrollWrapIsNearBottom(e.currentTarget)
+  }, [])
 
   useEffect(() => {
     function onResize() {
@@ -116,6 +129,17 @@ export default function LogsPanel() {
     () => filterEntries(entries, levelFilter),
     [entries, levelFilter],
   )
+
+  useLayoutEffect(() => {
+    if (!dockOpen) {
+      return
+    }
+    const el = tableWrapRef.current
+    if (!el || !stickToBottomRef.current) {
+      return
+    }
+    el.scrollTop = el.scrollHeight - el.clientHeight
+  }, [filteredEntries, dockOpen])
 
   const rows = useMemo(
     () =>
@@ -228,7 +252,11 @@ export default function LogsPanel() {
             />
           </header>
 
-          <div className="logs-table-wrap">
+          <div
+            ref={tableWrapRef}
+            className="logs-table-wrap"
+            onScroll={onTableWrapScroll}
+          >
             <table className="logs-table">
               <thead>
                 <tr>
