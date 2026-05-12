@@ -2,10 +2,9 @@
 
 from __future__ import annotations
 
-from collections.abc import Callable
-
+import typing
 
 class VenueService:
     """Zone / venue load lifecycle (minimal surface used by :mod:`sim_os.hooks`)."""
 
-    on_loading_screen_animation_finished: Callable[..., None]
+    on_loading_screen_animation_finished: typing.Callable[..., None]
