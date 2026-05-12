@@ -84,7 +84,7 @@ class ModBridge:
         class _Handler(BaseHTTPRequestHandler):
             protocol_version = "HTTP/1.1"
 
-            def log_message(self, fmt: str, *_args: object) -> None:  # noqa: ARG002
+            def log_message(self, format: str, *_args: object) -> None:
                 return
 
             def do_GET(self) -> None:

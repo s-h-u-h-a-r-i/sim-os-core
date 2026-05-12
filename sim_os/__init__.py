@@ -14,7 +14,7 @@ Submodules::
 
 from __future__ import annotations
 
-from . import hooks  # noqa: F401 — registers zone-load patch
+from . import hooks
 from . import bootstrap
 from . import bridge
 from . import log_sink
