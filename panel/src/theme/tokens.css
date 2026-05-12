@@ -1,0 +1,39 @@
+/**
+ * Sims-4-adjacent chrome — light, in-game menu feel (see docs/mod-browser-bridge.md).
+ * No EA assets.
+ */
+:root {
+  --surface: #ffffff;
+  --surface-elevated: #faf8f4;
+  --surface-muted: #f0ebe3;
+  --border: #d6cec2;
+  --border-subtle: #e8e2d8;
+  --text-primary: #2c2824;
+  --text-muted: #6b645a;
+  --accent: #2f8f4a;
+  --accent-soft: #3da85c;
+  --accent-faint: #e4f2e8;
+  --shadow-sm: 0 1px 2px rgb(44 40 36 / 0.06);
+  --shadow-md: 0 8px 28px rgb(44 40 36 / 0.12);
+  --level-info: #2f7a3c;
+  --level-debug: #2a6f9e;
+  --level-warn: #b8860b;
+  --level-error: #c43d3d;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background:
+    radial-gradient(ellipse 120% 80% at 50% -20%, #faf6ef 0%, transparent 55%),
+    linear-gradient(180deg, #ebe6dc 0%, #e3ddd2 45%, #dcd5c8 100%);
+  font-family:
+    'Nunito',
+    'Segoe UI',
+    system-ui,
+    sans-serif;
+}
+
+#root {
+  min-height: 100vh;
+}

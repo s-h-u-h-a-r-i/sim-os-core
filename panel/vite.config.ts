@@ -13,6 +13,9 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
+    /** Hard-fixed; must match `sim_os.bootstrap._DEV_VITE_ORIGIN` (5173). */
+    port: 5173,
+    strictPort: true,
     proxy: {
       '/ws': {
         target: `ws://127.0.0.1:${DEFAULT_BRIDGE_PORT}`,
