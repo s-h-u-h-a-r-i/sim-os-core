@@ -7,6 +7,7 @@ import mimetypes
 import queue
 import socket
 import threading
+import typing
 import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
@@ -18,18 +19,6 @@ from . import ws_framing
 
 def create_bridge(static_root: Path) -> ModBridge:
     return ModBridge(static_root=static_root)
-
-
-def _resolve_under_static(static_root: Path, url_path: str) -> Path | None:
-    rel = urllib.parse.unquote(url_path).lstrip("/")
-    if not rel or rel.endswith("/"):
-        rel = f"{rel}index.html".lstrip("/")
-    candidate = (static_root / rel).resolve()
-    try:
-        candidate.relative_to(static_root)
-    except ValueError:
-        return None
-    return candidate if candidate.is_file() else None
 
 
 class ModBridge:
@@ -49,16 +38,16 @@ class ModBridge:
         self.static_root = static_root.resolve()
         self.host = host
         self.preferred_port = preferred_port
-        self.bound_port: int | None = None
-        self._panel_url: str | None = None
+        self.bound_port: typing.Optional[int] = None
+        self._panel_url: typing.Optional[str] = None
 
-        self._httpd: ThreadingHTTPServer | None = None
-        self._http_thread: threading.Thread | None = None
-        self._log_queue: queue.Queue[str] | None = None
+        self._httpd: typing.Optional[ThreadingHTTPServer] = None
+        self._http_thread: typing.Optional[threading.Thread] = None
+        self._log_queue: typing.Optional[queue.Queue[str]] = None
         self._ws_lock = threading.Lock()
         self._ws_clients: list[socket.socket] = []
         self._fan_stop = threading.Event()
-        self._fan_thread: threading.Thread | None = None
+        self._fan_thread: typing.Optional[threading.Thread] = None
 
     # --------------------------------------------------------------------- HTTP + WS ---
 
@@ -183,3 +172,15 @@ class ModBridge:
                     for s in stale:
                         if s in self._ws_clients:
                             self._ws_clients.remove(s)
+
+
+def _resolve_under_static(static_root: Path, url_path: str) -> typing.Optional[Path]:
+    rel = urllib.parse.unquote(url_path).lstrip("/")
+    if not rel or rel.endswith("/"):
+        rel = f"{rel}index.html".lstrip("/")
+    candidate = (static_root / rel).resolve()
+    try:
+        candidate.relative_to(static_root)
+    except ValueError:
+        return None
+    return candidate if candidate.is_file() else None

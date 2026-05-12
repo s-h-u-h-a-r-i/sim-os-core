@@ -21,6 +21,7 @@ from __future__ import annotations
 import argparse
 import shutil
 import subprocess
+import typing
 import zipfile
 from pathlib import Path
 from zipfile import PyZipFile
@@ -35,7 +36,7 @@ def default_package_root(root: Path) -> Path:
     return root / "sim_os"
 
 
-def resolve_mods_dir(cli: Path | None) -> Path:
+def resolve_mods_dir(cli: typing.Optional[Path]) -> Path:
     if cli is not None:
         return cli.expanduser().resolve()
     return DEFAULT_MODS_DIR.resolve()

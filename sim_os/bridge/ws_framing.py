@@ -6,6 +6,7 @@ import base64
 import hashlib
 import socket
 import struct
+import typing
 
 # RFC6455 §4 — Sec-WebSocket-Accept
 _WS_ACCEPT_MAGIC = "258EAFA5-E914-47DA-95CA-C5AB0DC85B11"
@@ -39,38 +40,6 @@ def encode_ws_text_utf8(payload: str) -> bytes:
     return bytes(header) + data
 
 
-def _encode_ws_unmasked_opcode(opcode: int, payload: bytes) -> bytes:
-    header = bytearray([0x80 | (opcode & 0x0F)])
-    byte_len = len(payload)
-    if byte_len < 126:
-        header.append(byte_len)
-    elif byte_len < 65536:
-        header.append(126)
-        header.extend(struct.pack("!H", byte_len))
-    else:
-        header.append(127)
-        header.extend(struct.pack("!Q", byte_len))
-    return bytes(header) + payload
-
-
-def encode_ws_pong(payload: bytes = b"") -> bytes:
-    """Server → client pong (opcode 0xA); payload usually empty."""
-    return _encode_ws_unmasked_opcode(_WS_OP_PONG, payload)
-
-
-def recv_exact(sock: socket.socket, n: int) -> bytes | None:
-    """Read exactly ``n`` bytes from a blocking TCP socket."""
-    chunks: list[bytes] = []
-    got = 0
-    while got < n:
-        b = sock.recv(n - got)
-        if not b:
-            return None
-        chunks.append(b)
-        got += len(b)
-    return b"".join(chunks)
-
-
 def pump_ws_client(
     sock: socket.socket,
     *,
@@ -83,7 +52,7 @@ def pump_ws_client(
 
     Caller must negotiate the upgrade already; masking is enforced for client payloads.
     """
-    hdr = recv_exact(sock, 2)
+    hdr = _recv_exact(sock, 2)
     if hdr is None or len(hdr) < 2:
         return False
 
@@ -92,12 +61,12 @@ def pump_ws_client(
     length = hdr[1] & 0x7F
 
     if length == 126:
-        ext = recv_exact(sock, 2)
+        ext = _recv_exact(sock, 2)
         if ext is None:
             return False
         length = struct.unpack("!H", ext)[0]
     elif length == 127:
-        ext = recv_exact(sock, 8)
+        ext = _recv_exact(sock, 8)
         if ext is None:
             return False
         length = struct.unpack("!Q", ext)[0]
@@ -107,12 +76,12 @@ def pump_ws_client(
 
     if not masked:
         return False
-    mk = recv_exact(sock, 4)
+    mk = _recv_exact(sock, 4)
     if mk is None or len(mk) < 4:
         return False
     masking_key = mk
 
-    payload = recv_exact(sock, length)
+    payload = _recv_exact(sock, length)
     if payload is None:
         return False
 
@@ -122,8 +91,37 @@ def pump_ws_client(
     if opcode == _WS_OP_CLOSE:
         return False
     if opcode == _WS_OP_PING and respond_to_ping:
-        sock.sendall(encode_ws_pong(payload))
+        sock.sendall(_encode_ws_pong(payload))
         return True
     if opcode in {_WS_OP_TEXT, _WS_OP_CONTINUE, _WS_OP_PONG}:
         return True
     return True
+
+
+def _recv_exact(sock: socket.socket, n: int) -> typing.Optional[bytes]:
+    """Read exactly ``n`` bytes from a blocking TCP socket."""
+    chunks: list[bytes] = []
+    got = 0
+    while got < n:
+        b = sock.recv(n - got)
+        if not b:
+            return None
+        chunks.append(b)
+        got += len(b)
+    return b"".join(chunks)
+
+
+def _encode_ws_pong(payload: bytes = b"") -> bytes:
+    """Server → client pong (opcode 0xA); payload usually empty."""
+    opcode = _WS_OP_PONG
+    header = bytearray([0x80 | (opcode & 0x0F)])
+    byte_len = len(payload)
+    if byte_len < 126:
+        header.append(byte_len)
+    elif byte_len < 65536:
+        header.append(126)
+        header.extend(struct.pack("!H", byte_len))
+    else:
+        header.append(127)
+        header.extend(struct.pack("!Q", byte_len))
+    return bytes(header) + payload
