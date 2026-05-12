@@ -1,7 +1,6 @@
 /* Ported from sims_4_modding_old viewer sim-card.css — primary / secondary pills */
 
 .action-btn {
-  font-size: var(--font-size-sm);
   font-family: inherit;
   font-weight: var(--font-weight-strong);
   letter-spacing: 0.05em;
@@ -20,7 +19,6 @@
 }
 
 .action-btn--compact {
-  font-size: var(--font-size-tight);
   padding: 0.32rem 0.65rem;
   border-radius: var(--radius-widget);
 }
@@ -31,7 +29,7 @@
 }
 
 .action-btn:active {
-  transform: translateY(1px);
+  transform: translateY(0.0625rem);
   box-shadow: var(--shadow-btn-3d-active);
 }
 
@@ -50,11 +48,11 @@
 }
 
 .action-btn--secondary:active {
-  transform: translateY(1px);
+  transform: translateY(0.0625rem);
   box-shadow: none;
 }
 
 .action-btn:focus-visible {
-  outline: 2px solid var(--warn);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--warn);
+  outline-offset: 0.125rem;
 }

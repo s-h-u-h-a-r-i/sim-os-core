@@ -1,61 +1,46 @@
-/* Ported from sims_4_modding_old viewer mod-log.css (panel header chrome). */
+/* Single header bar: title + inline actions */
 
 .mod-log-panel-header {
   display: flex;
   flex-direction: row;
-  align-items: flex-start;
-  justify-content: flex-start;
-  gap: var(--gap-sm);
-  padding: 0.65rem 1rem 0.55rem;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gap-sm) var(--gap-md);
+  padding: 0.5rem 1rem;
   background: var(--grad-header-chrome);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 0.0625rem solid var(--border);
 }
 
 .mod-log-panel-title-block {
-  flex: 1;
+  flex: 0 1 auto;
+  min-width: 0;
+  max-width: 100%;
+}
+
+.mod-log-panel-title-block h1 {
+  margin: 0;
+}
+
+.mod-log-panel-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--gap-sm) var(--gap-md);
+  margin-left: auto;
+  flex: 1 1 auto;
+  justify-content: flex-end;
   min-width: 0;
 }
 
-.mod-log-title {
-  margin: 0 0 0.2rem;
-  font-size: var(--font-size-mod-log-title);
-  font-weight: var(--font-weight-strong);
-  color: var(--fg);
-  line-height: 1.2;
-}
-
-.mod-log-panel-sub {
-  margin: 0;
-  font-size: var(--font-size-body);
-  color: var(--muted);
-  line-height: 1.45;
-  font-weight: var(--font-weight-regular);
-}
-
-.mod-log-close-btn {
-  flex: 0 0 auto;
-  margin-left: auto;
-  min-width: 2.25rem;
-  min-height: 2.25rem;
-  display: inline-flex;
+.mod-log-panel-actions .toolbar-field {
+  display: flex;
   align-items: center;
-  justify-content: center;
-  font-size: var(--font-size-close);
-  line-height: 1;
-  color: var(--muted);
-  background: var(--panel);
-  border: 2px solid var(--border-soft);
-  border-radius: var(--radius-widget);
-  cursor: pointer;
-  padding: 0;
-  transition:
-    color 0.15s,
-    background 0.15s,
-    border-color 0.15s;
+  gap: var(--gap-sm);
+  min-width: 0;
+  flex: 0 1 auto;
 }
 
-.mod-log-close-btn:hover {
-  color: var(--fg);
-  background: var(--plumbob-tint);
-  border-color: var(--plumbob);
+.mod-log-panel-actions .toolbar-field .sims-pill-disclosure {
+  min-width: 8.5rem;
+  max-width: 12.5rem;
 }

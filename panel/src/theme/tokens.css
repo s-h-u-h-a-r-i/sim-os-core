@@ -1,6 +1,9 @@
 /**
  * Ported from sims_4_modding_old/ai_service/.../viewer/tokens.css — warm panels, plumbob green.
  * No EA assets.
+ *
+ * Layout uses rem off the browser root (typically 16px). Typography scale lives in index.css
+ * (body base + h1–h6, etc.); keep using these tokens for spacing and chrome.
  */
 :root {
   --font-viewer: 'Quicksand', 'Segoe UI', system-ui, -apple-system, sans-serif;
@@ -36,29 +39,15 @@
   --body-grad-bottom: #dfd6c4;
   --expanded-body-fade: rgba(243, 236, 224, 0.5);
 
-  --radius-full: 999px;
-  --radius-card: 16px;
-  --radius-panel: 14px;
-  --radius-toggle: 12px;
-  --radius-widget: 8px;
+  --radius-full: 62.5rem;
+  --radius-card: 1rem;
+  --radius-panel: 0.875rem;
+  --radius-toggle: 0.75rem;
+  --radius-widget: 0.5rem;
 
-  --scrollbar-size: 11px;
+  --scrollbar-size: 0.6875rem;
   --gap-sm: 0.55rem;
   --gap-md: 1rem;
-
-  /* Typography — single source of truth (rem / em); use these in components instead of literals. */
-  --font-size-2xs: 0.5rem;
-  --font-size-chevron: 0.55rem;
-  --font-size-micro: 0.58rem;
-  --font-size-tight: 0.62rem;
-  --font-size-sm: 0.68rem;
-  --font-size-caption: 0.7rem;
-  --font-size-ui: 0.72rem;
-  --font-size-heading-sm: 0.78rem;
-  --font-size-body: 0.875rem;
-  --font-size-mod-log-title: 1rem; /* panel sheet header — larger than --font-size-heading-sm */
-  --font-size-close: 1.25rem;
-  --font-size-code-em: 0.85em;
 
   --font-weight-regular: 600;
   --font-weight-strong: 700;
@@ -74,8 +63,8 @@
   --grad-header-chrome: linear-gradient(
     180deg,
     var(--plumbob-bright) 0,
-    var(--plumbob) 3px,
-    var(--panel) 3px,
+    var(--plumbob) 0.1875rem,
+    var(--panel) 0.1875rem,
     var(--panel-shade) 100%
   );
   --grad-expanded-body: linear-gradient(180deg, var(--expanded-body-fade), transparent);
@@ -84,19 +73,19 @@
     radial-gradient(ellipse 90% 60% at 100% 100%, var(--body-vignette-cream), transparent 45%),
     linear-gradient(165deg, var(--cream) 0%, var(--cream-deep) 48%, var(--body-grad-bottom) 100%);
 
-  --shadow-inset: inset 0 1px 2px var(--shadow);
-  --shadow-face: inset 0 1px 0 var(--white-face), 0 1px 2px var(--shadow);
-  --shadow-toggle-on: inset 0 1px 0 var(--white-face), 0 0 0 1px var(--shadow-toggle-ring);
-  --shadow-card: 0 3px 10px var(--shadow);
-  --shadow-card-hover: 0 4px 16px var(--shadow), 0 0 0 3px var(--plumbob-glow);
-  --shadow-float-header: 0 4px 14px var(--shadow);
-  --shadow-btn-3d: 0 2px 0 var(--plumbob-deep), 0 3px 8px var(--shadow);
-  --shadow-btn-3d-hover: 0 2px 0 var(--plumbob-deep), 0 4px 12px var(--plumbob-glow);
-  --shadow-btn-3d-active: 0 1px 0 var(--plumbob-deep);
-  --text-shadow-btn: 0 1px 0 rgba(0, 0, 0, 0.15);
+  --shadow-inset: inset 0 0.0625rem 0.125rem var(--shadow);
+  --shadow-face: inset 0 0.0625rem 0 var(--white-face), 0 0.0625rem 0.125rem var(--shadow);
+  --shadow-toggle-on: inset 0 0.0625rem 0 var(--white-face), 0 0 0 0.0625rem var(--shadow-toggle-ring);
+  --shadow-card: 0 0.1875rem 0.625rem var(--shadow);
+  --shadow-card-hover: 0 0.25rem 1rem var(--shadow), 0 0 0 0.1875rem var(--plumbob-glow);
+  --shadow-float-header: 0 0.25rem 0.875rem var(--shadow);
+  --shadow-btn-3d: 0 0.125rem 0 var(--plumbob-deep), 0 0.1875rem 0.5rem var(--shadow);
+  --shadow-btn-3d-hover: 0 0.125rem 0 var(--plumbob-deep), 0 0.25rem 0.75rem var(--plumbob-glow);
+  --shadow-btn-3d-active: 0 0.0625rem 0 var(--plumbob-deep);
+  --text-shadow-btn: 0 0.0625rem 0 rgba(0, 0, 0, 0.15);
 
-  --border-2-plumbob: 2px solid var(--plumbob-deep);
-  --border-2-soft: 2px solid var(--border-soft);
+  --border-2-plumbob: 0.125rem solid var(--plumbob-deep);
+  --border-2-soft: 0.125rem solid var(--border-soft);
 }
 
 body {
@@ -105,8 +94,9 @@ body {
   background: var(--grad-body-bg);
   color: var(--fg);
   font-family: var(--font-viewer);
-  font-size: var(--font-size-body);
+  font-size: 0.875rem;
   font-weight: var(--font-weight-regular);
+  line-height: 1.45;
   -webkit-font-smoothing: antialiased;
 }
 

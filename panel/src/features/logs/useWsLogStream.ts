@@ -29,6 +29,7 @@ export function useWsLogStream(append: (row: PanelLogEntry) => void): void {
     let ws: WebSocket | null = null
     let reconnectTimer: ReturnType<typeof setTimeout> | null = null
     let attempt = 0
+    let gen = 0
 
     const clearTimers = () => {
       if (reconnectTimer !== null) {
@@ -49,13 +50,19 @@ export function useWsLogStream(append: (row: PanelLogEntry) => void): void {
         return
       }
       clearTimers()
-      ws = new WebSocket(url)
+      const myGen = ++gen
+      const myWs = new WebSocket(url)
+      ws = myWs
 
-      ws.onopen = () => {
+      myWs.onopen = () => {
+        if (cancelled || myGen !== gen) {
+          myWs.close()
+          return
+        }
         attempt = 0
       }
 
-      ws.onmessage = (ev: MessageEvent) => {
+      myWs.onmessage = (ev: MessageEvent) => {
         if (typeof ev.data !== 'string') {
           return
         }
@@ -74,7 +81,10 @@ export function useWsLogStream(append: (row: PanelLogEntry) => void): void {
         }
       }
 
-      ws.onclose = () => {
+      myWs.onclose = () => {
+        if (myGen !== gen) {
+          return
+        }
         ws = null
         if (!cancelled) {
           scheduleReconnect()
@@ -87,7 +97,14 @@ export function useWsLogStream(append: (row: PanelLogEntry) => void): void {
     return () => {
       cancelled = true
       clearTimers()
-      ws?.close()
+      const s = ws
+      ws = null
+      if (!s) {
+        return
+      }
+      if (s.readyState === WebSocket.OPEN) {
+        s.close()
+      }
     }
   }, [])
 }

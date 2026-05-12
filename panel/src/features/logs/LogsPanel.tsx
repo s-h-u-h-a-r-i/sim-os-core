@@ -10,11 +10,9 @@ import {
   ActionButton,
   ModLogCount,
   ModLogPanelHeader,
-  ModLogToolbar,
   ModLogToolbarBtns,
   PillDisclosureMenu,
   ToolbarField,
-  ToolbarLabeledControl,
 } from '../../components/sims'
 import { formatLogTimestamp } from './formatLogRow'
 import type { LogLevel, PanelLogEntry } from './types'
@@ -23,8 +21,29 @@ import { useWsLogStream } from './useWsLogStream'
 
 import './logsPanel.css'
 
-const MIN_SHEET_PX = 160
-const DEFAULT_SHEET_PX = 320
+const MIN_SHEET_REM = 10
+const DEFAULT_SHEET_REM = 20
+
+/** If the user releases the resize handle at (nominal) minimum height, hide the sheet like the old close control. */
+const SHEET_DRAG_COLLAPSE_EPS_REM = 0.125
+
+/** Collapse dock when viewport height crosses down through this value (edge-triggered; avoids instant re-close after tray open on short viewports). */
+const DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX = 520
+
+function rootFontPx(): number {
+  if (typeof document === 'undefined') {
+    return 16
+  }
+  return parseFloat(getComputedStyle(document.documentElement).fontSize)
+}
+
+function clampSheetHeightRem(rem: number): number {
+  if (typeof window === 'undefined') {
+    return rem
+  }
+  const maxRem = (window.innerHeight * 0.92) / rootFontPx()
+  return Math.max(MIN_SHEET_REM, Math.min(maxRem, rem))
+}
 
 type LevelFilter = 'all' | LogLevel
 
@@ -36,26 +55,14 @@ const FILTER_OPTIONS: { value: LevelFilter; label: string }[] = [
   { value: 'error', label: 'Error' },
 ]
 
-function clampSheetHeight(px: number): number {
-  if (typeof window === 'undefined') {
-    return px
-  }
-  const max = Math.floor(window.innerHeight * 0.92)
-  return Math.max(MIN_SHEET_PX, Math.min(max, px))
-}
-
 function filterEntries(
   list: readonly PanelLogEntry[],
   levelFilter: LevelFilter,
-  showDebug: boolean,
 ): PanelLogEntry[] {
-  if (levelFilter === 'all' && !showDebug) {
-    return list.filter((e) => e.level !== 'debug')
+  if (levelFilter === 'all') {
+    return [...list]
   }
-  if (levelFilter !== 'all') {
-    return list.filter((e) => e.level === levelFilter)
-  }
-  return [...list]
+  return list.filter((e) => e.level === levelFilter)
 }
 
 /** In-memory structured log table in a bottom dock; live rows from ModBridge ``/ws``. */
@@ -64,23 +71,50 @@ export default function LogsPanel() {
   const { entries, append, clear } = useInMemoryLogs()
   useWsLogStream(append)
 
-  const [dockOpen, setDockOpen] = useState(true)
-  const [sheetHeight, setSheetHeight] = useState(DEFAULT_SHEET_PX)
+  const [dockOpen, setDockOpen] = useState(() => {
+    if (typeof window === 'undefined') {
+      return true
+    }
+    return window.innerHeight > DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX
+  })
+  const [sheetHeightRem, setSheetHeightRem] = useState(DEFAULT_SHEET_REM)
   const [levelFilter, setLevelFilter] = useState<LevelFilter>('all')
-  const [showDebug, setShowDebug] = useState(true)
   const dragRef = useRef<{ startY: number; startH: number } | null>(null)
+  const viewportHRef = useRef(
+    typeof window === 'undefined' ? DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX + 1 : window.innerHeight,
+  )
 
   useEffect(() => {
     function onResize() {
-      setSheetHeight((h) => clampSheetHeight(h))
+      const h = window.innerHeight
+      setSheetHeightRem((rem) => clampSheetHeightRem(rem))
+      if (
+        viewportHRef.current > DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX &&
+        h <= DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX
+      ) {
+        setDockOpen(false)
+      }
+      viewportHRef.current = h
     }
     window.addEventListener('resize', onResize)
     return () => window.removeEventListener('resize', onResize)
   }, [])
 
+  const openDock = useCallback(() => {
+    setDockOpen(true)
+    if (typeof window === 'undefined') {
+      return
+    }
+    if (window.innerHeight <= DOCK_COLLAPSE_VIEWPORT_HEIGHT_PX) {
+      setSheetHeightRem((rem) =>
+        clampSheetHeightRem(Math.max(rem, DEFAULT_SHEET_REM, MIN_SHEET_REM + 2.5)),
+      )
+    }
+  }, [])
+
   const filteredEntries = useMemo(
-    () => filterEntries(entries, levelFilter, showDebug),
-    [entries, levelFilter, showDebug],
+    () => filterEntries(entries, levelFilter),
+    [entries, levelFilter],
   )
 
   const rows = useMemo(
@@ -96,27 +130,19 @@ export default function LogsPanel() {
     [filteredEntries],
   )
 
-  function pushDemo(): void {
-    append({
-      ts: Date.now() / 1000,
-      level: 'info',
-      key: 'panel.demo',
-      message: 'Sample in-memory row.',
-    })
-  }
-
   const onHandlePointerDown = useCallback((e: PointerEvent<HTMLDivElement>) => {
     e.preventDefault()
     e.currentTarget.setPointerCapture(e.pointerId)
-    dragRef.current = { startY: e.clientY, startH: sheetHeight }
-  }, [sheetHeight])
+    dragRef.current = { startY: e.clientY, startH: sheetHeightRem }
+  }, [sheetHeightRem])
 
   const onHandlePointerMove = useCallback((e: PointerEvent<HTMLDivElement>) => {
     if (!dragRef.current) {
       return
     }
-    const delta = dragRef.current.startY - e.clientY
-    setSheetHeight(clampSheetHeight(dragRef.current.startH + delta))
+    const deltaPx = dragRef.current.startY - e.clientY
+    const deltaRem = deltaPx / rootFontPx()
+    setSheetHeightRem(clampSheetHeightRem(dragRef.current.startH + deltaRem))
   }, [])
 
   const onHandlePointerUp = useCallback((e: PointerEvent<HTMLDivElement>) => {
@@ -124,16 +150,20 @@ export default function LogsPanel() {
     if (e.currentTarget.hasPointerCapture(e.pointerId)) {
       e.currentTarget.releasePointerCapture(e.pointerId)
     }
+    setSheetHeightRem((rem) => {
+      if (rem <= MIN_SHEET_REM + SHEET_DRAG_COLLAPSE_EPS_REM) {
+        setDockOpen(false)
+      }
+      return rem
+    })
   }, [])
-
-  const debugCheckboxDisabled = levelFilter !== 'all'
 
   return (
     <div className="logs-dock-root" data-open={dockOpen ? 'true' : 'false'}>
       <button
         type="button"
         className="logs-dock-tray"
-        onClick={() => setDockOpen(true)}
+        onClick={openDock}
         aria-expanded={dockOpen}
         aria-controls="logs-dock-sheet"
       >
@@ -149,7 +179,7 @@ export default function LogsPanel() {
       <div
         id="logs-dock-sheet"
         className="logs-dock-sheet"
-        style={{ height: dockOpen ? sheetHeight : 0 }}
+        style={{ height: dockOpen ? `${sheetHeightRem}rem` : 0 }}
         role="region"
         aria-label="Structured log stream"
         hidden={!dockOpen}
@@ -162,7 +192,7 @@ export default function LogsPanel() {
           onPointerCancel={onHandlePointerUp}
           role="separator"
           aria-orientation="horizontal"
-          aria-valuenow={Math.round(sheetHeight)}
+          aria-valuenow={Math.round(sheetHeightRem * rootFontPx())}
           tabIndex={0}
         >
           <span className="logs-dock-handle-grip" />
@@ -172,51 +202,30 @@ export default function LogsPanel() {
           <header className="logs-header">
             <ModLogPanelHeader
               title="sim_os logs"
-              closeAriaLabel="Hide log panel"
-              onClose={() => setDockOpen(false)}
-              subtitle={
+              toolbar={
                 <>
-                  Rows stay in memory until you reload. Live lines arrive over a WebSocket to this
-                  origin&apos;s <code className="logs-inline-code">/ws</code> (the mod listens on
-                  loopback only).
+                  <ModLogToolbarBtns>
+                    <ActionButton variant="secondary" compact onClick={clear}>
+                      Clear
+                    </ActionButton>
+                  </ModLogToolbarBtns>
+
+                  <ToolbarField label="Level">
+                    <PillDisclosureMenu<LevelFilter>
+                      options={FILTER_OPTIONS}
+                      value={levelFilter}
+                      onChange={setLevelFilter}
+                      listboxAriaLabel="Log level filter"
+                    />
+                  </ToolbarField>
+
+                  <ModLogCount>
+                    {filteredEntries.length} shown
+                    {filteredEntries.length !== entries.length ? ` · ${entries.length} total` : ''}
+                  </ModLogCount>
                 </>
               }
             />
-
-            <ModLogToolbar>
-              <ModLogToolbarBtns>
-                <ActionButton variant="secondary" compact onClick={clear}>
-                  Clear
-                </ActionButton>
-                <ActionButton compact onClick={pushDemo}>
-                  Add demo row
-                </ActionButton>
-              </ModLogToolbarBtns>
-
-              <ToolbarField label="Level">
-                <PillDisclosureMenu<LevelFilter>
-                  options={FILTER_OPTIONS}
-                  value={levelFilter}
-                  onChange={setLevelFilter}
-                  listboxAriaLabel="Log level filter"
-                />
-              </ToolbarField>
-
-              <ToolbarLabeledControl label="Debug" disabled={debugCheckboxDisabled}>
-                <input
-                  type="checkbox"
-                  className="sims-toolbar-checkbox"
-                  checked={showDebug}
-                  disabled={debugCheckboxDisabled}
-                  onChange={(e) => setShowDebug(e.target.checked)}
-                />
-              </ToolbarLabeledControl>
-
-              <ModLogCount>
-                {filteredEntries.length} shown
-                {filteredEntries.length !== entries.length ? ` · ${entries.length} total` : ''}
-              </ModLogCount>
-            </ModLogToolbar>
           </header>
 
           <div className="logs-table-wrap">

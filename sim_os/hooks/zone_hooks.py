@@ -15,7 +15,6 @@ def _on_loading_screen_animation_finished(
     **kwargs: typing.Any,
 ) -> typing.Any:
     result = _orig_loading_finished(self, *args, **kwargs)
-    print("[sim_os] zone_loaded → bridge", flush=True)
     from ..bootstrap import ensure_bridge_started
 
     ensure_bridge_started()

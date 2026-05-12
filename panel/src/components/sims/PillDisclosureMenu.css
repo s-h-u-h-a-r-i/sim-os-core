@@ -15,9 +15,8 @@
   cursor: pointer;
   padding: 0.4rem 0.75rem;
   border-radius: var(--radius-widget);
-  border: 2px solid var(--border);
+  border: 0.125rem solid var(--border);
   font: inherit;
-  font-size: var(--font-size-ui);
   font-weight: var(--font-weight-strong);
   letter-spacing: 0.06em;
   text-transform: uppercase;
@@ -35,8 +34,8 @@
 }
 
 .sims-pill-disclosure__trigger:focus-visible {
-  outline: 2px solid var(--warn);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--warn);
+  outline-offset: 0.125rem;
 }
 
 .sims-pill-disclosure[data-open='false'] .sims-pill-disclosure__trigger {
@@ -62,8 +61,8 @@
   background: var(--grad-plumbob);
   border-color: var(--plumbob-deep);
   box-shadow:
-    inset 0 1px 0 var(--white-face),
-    0 1px 5px var(--shadow);
+    inset 0 0.0625rem 0 var(--white-face),
+    0 0.0625rem 0.3125rem var(--shadow);
 }
 
 .sims-pill-disclosure[data-open='true'] .sims-pill-disclosure__trigger:hover {
@@ -93,7 +92,6 @@
   align-items: center;
   justify-content: center;
   width: 0.85rem;
-  font-size: var(--font-size-2xs);
   line-height: 1;
   margin-left: 0.15rem;
   transform-origin: center;
@@ -116,7 +114,7 @@
   padding: 0.35rem;
   list-style: none;
   border-radius: var(--radius-widget);
-  border: 2px solid var(--border);
+  border: 0.125rem solid var(--border);
   background: var(--panel);
   box-shadow: var(--shadow-card);
 }
@@ -133,10 +131,9 @@
   width: 100%;
   padding: 0.35rem 0.5rem;
   border-radius: var(--radius-full);
-  border: 2px solid var(--border-soft);
+  border: 0.125rem solid var(--border-soft);
   background: linear-gradient(180deg, var(--cream) 0%, var(--panel-shade) 100%);
   font: inherit;
-  font-size: var(--font-size-sm);
   font-weight: var(--font-weight-strong);
   color: var(--plumbob-deep);
   cursor: pointer;
@@ -149,10 +146,10 @@
 }
 
 .sims-pill-disclosure__option:focus-visible {
-  outline: 2px solid var(--warn);
-  outline-offset: 2px;
+  outline: 0.125rem solid var(--warn);
+  outline-offset: 0.125rem;
 }
 
 .sims-pill-disclosure__option:active {
-  transform: translateY(1px);
+  transform: translateY(0.0625rem);
 }

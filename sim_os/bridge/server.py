@@ -5,7 +5,6 @@ from __future__ import annotations
 import errno
 import mimetypes
 import queue
-import secrets
 import socket
 import threading
 import urllib.parse
@@ -34,7 +33,11 @@ def _resolve_under_static(static_root: Path, url_path: str) -> Path | None:
 
 
 class ModBridge:
-    """Serves ``sim_os_panel`` from ``static_root`` and streams UTF-8 JSON logs on ``/ws``."""
+    """Serves ``sim_os_panel`` from ``static_root`` and streams UTF-8 JSON logs on ``/ws``.
+
+    The listener is bound to loopback only; ``/ws`` accepts upgrades from local clients with no
+    application-level token.
+    """
 
     def __init__(
         self,
@@ -47,7 +50,6 @@ class ModBridge:
         self.host = host
         self.preferred_port = preferred_port
         self.bound_port: int | None = None
-        self.auth_token: str | None = None
         self._panel_url: str | None = None
 
         self._httpd: ThreadingHTTPServer | None = None
@@ -68,7 +70,6 @@ class ModBridge:
         if self._panel_url is not None:
             return self._panel_url
 
-        self.auth_token = secrets.token_urlsafe(24)
         self._log_queue = queue.Queue(maxsize=10000)
         log_sink.attach_log_queue(self._log_queue)
 
@@ -91,12 +92,6 @@ class ModBridge:
                 parsed = urllib.parse.urlparse(self.path)
 
                 if parsed.path == "/ws":
-                    qs = urllib.parse.parse_qs(parsed.query, keep_blank_values=True)
-                    supplied = qs.get("token", [""])[0]
-                    if not bridge.auth_token or supplied != bridge.auth_token:
-                        self.send_error(403, "Forbidden")
-                        return
-
                     ws_key = self.headers.get("Sec-WebSocket-Key")
                     if not ws_key:
                         self.send_error(400, "Bad Request")
@@ -160,8 +155,7 @@ class ModBridge:
         srv_thread.start()
         self._http_thread = srv_thread
 
-        quoted = urllib.parse.quote(self.auth_token, safe="")
-        self._panel_url = f"http://{self.host}:{self.bound_port}/?token={quoted}"
+        self._panel_url = f"http://{self.host}:{self.bound_port}/"
         return self._panel_url
 
     # -------------------------------------------------------------------------

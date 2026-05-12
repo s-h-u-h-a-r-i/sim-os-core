@@ -23,7 +23,7 @@
   gap: var(--gap-sm);
   padding: 0.5rem 1.1rem calc(0.5rem + env(safe-area-inset-bottom, 0));
   background: var(--panel);
-  border: 2px solid var(--border);
+  border: 0.125rem solid var(--border);
   border-bottom: none;
   border-radius: var(--radius-card) var(--radius-card) 0 0;
   box-shadow: var(--shadow-float-header);
@@ -37,14 +37,13 @@
 }
 
 .logs-dock-root[data-open='true'] .logs-dock-tray {
-  transform: translateY(calc(100% + 8px));
+  transform: translateY(calc(100% + 0.5rem));
   opacity: 0;
   visibility: hidden;
   pointer-events: none;
 }
 
 .logs-dock-tray-title {
-  font-size: var(--font-size-ui);
   font-weight: var(--font-weight-strong);
   text-transform: uppercase;
   letter-spacing: 0.06em;
@@ -52,13 +51,11 @@
 }
 
 .logs-dock-tray-meta {
-  font-size: var(--font-size-ui);
   font-weight: var(--font-weight-strong);
   color: var(--muted);
 }
 
 .logs-dock-tray-chevron {
-  font-size: var(--font-size-chevron);
   color: var(--plumbob-deep);
 }
 
@@ -74,10 +71,10 @@
   flex-direction: column;
   overflow: hidden;
   background: var(--panel);
-  border: 2px solid var(--border);
+  border: 0.125rem solid var(--border);
   border-bottom: none;
   border-radius: var(--radius-card) var(--radius-card) 0 0;
-  box-shadow: 0 -6px 24px var(--shadow-deep);
+  box-shadow: 0 -0.375rem 1.5rem var(--shadow-deep);
 }
 
 .logs-dock-root[data-open='false'] .logs-dock-sheet {
@@ -94,12 +91,12 @@
   justify-content: center;
   align-items: center;
   background: var(--panel-shade);
-  border-bottom: 1px solid var(--border);
+  border-bottom: 0.0625rem solid var(--border);
 }
 
 .logs-dock-handle:focus-visible {
-  outline: 2px solid var(--warn);
-  outline-offset: -2px;
+  outline: 0.125rem solid var(--warn);
+  outline-offset: -0.125rem;
 }
 
 .logs-dock-handle-grip {
@@ -134,7 +131,6 @@
 .logs-table {
   width: 100%;
   border-collapse: collapse;
-  font-size: var(--font-size-ui);
   font-weight: var(--font-weight-regular);
   font-family: ui-monospace, 'Cascadia Code', monospace;
 }
@@ -143,7 +139,7 @@
 .logs-table td {
   padding: 0.35rem 0.45rem;
   text-align: left;
-  border-bottom: 1px solid var(--border-soft);
+  border-bottom: 0.0625rem solid var(--border-soft);
   vertical-align: top;
 }
 
@@ -152,13 +148,12 @@
   top: 0;
   background: var(--panel-shade);
   font-family: var(--font-viewer);
-  font-size: var(--font-size-tight);
   font-weight: var(--font-weight-strong);
   text-transform: uppercase;
   letter-spacing: 0.05em;
   color: var(--plumbob-deep);
   z-index: 1;
-  border-bottom: 1px solid var(--border);
+  border-bottom: 0.0625rem solid var(--border);
 }
 
 .logs-table tbody tr:hover {
@@ -178,10 +173,9 @@
   font-weight: var(--font-weight-strong);
   text-transform: uppercase;
   letter-spacing: 0.04em;
-  font-size: var(--font-size-micro);
   padding: 0.12rem 0.4rem;
   border-radius: var(--radius-full);
-  border: 1px solid var(--border);
+  border: 0.0625rem solid var(--border);
 }
 
 tr[data-level='debug'] .cell-level {
@@ -224,11 +218,9 @@ tr[data-level='warn'] .cell-level {
   line-height: 1.4;
 }
 
-.logs-inline-code {
-  font-family: ui-monospace, 'Cascadia Code', monospace;
-  font-size: var(--font-size-code-em);
-  padding: 0.05em 0.3em;
-  border-radius: 0.25rem;
-  background: var(--cream-deep);
-  border: 1px solid var(--border-soft);
+/* Phone / narrow mobile: no in-page log dock or tray (panel is loopback desktop tooling). */
+@media (max-width: 767px) {
+  .logs-dock-root {
+    display: none;
+  }
 }
