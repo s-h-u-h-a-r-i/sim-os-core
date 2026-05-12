@@ -5,3 +5,4 @@ __pycache__/
 .cursor/rules/
 
 .vscode/tasks.json
+.vscode/settings.json

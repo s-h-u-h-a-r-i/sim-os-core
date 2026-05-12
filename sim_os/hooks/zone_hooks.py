@@ -4,9 +4,9 @@ from __future__ import annotations
 
 import typing
 
-from venues.venue_service import VenueService  # type: ignore[import-untyped]
+from venues.venue_service import VenueService
 
-_orig_loading_finished = VenueService.on_loading_screen_animation_finished  # type: ignore[attr-defined]
+_orig_loading_finished = VenueService.on_loading_screen_animation_finished
 
 
 def _on_loading_screen_animation_finished(
@@ -22,6 +22,6 @@ def _on_loading_screen_animation_finished(
     return result
 
 
-VenueService.on_loading_screen_animation_finished = (  # type: ignore[method-assign]
+VenueService.on_loading_screen_animation_finished = (
     _on_loading_screen_animation_finished
 )
