@@ -1,0 +1,27 @@
+"""After live load completes, run :func:`~sim_os.bootstrap.ensure_bridge_started` on the game thread."""
+
+from __future__ import annotations
+
+import typing
+
+from venues.venue_service import VenueService  # type: ignore[import-untyped]
+
+_orig_loading_finished = VenueService.on_loading_screen_animation_finished  # type: ignore[attr-defined]
+
+
+def _on_loading_screen_animation_finished(
+    self: VenueService,
+    *args: typing.Any,
+    **kwargs: typing.Any,
+) -> typing.Any:
+    result = _orig_loading_finished(self, *args, **kwargs)
+    print("[sim_os] zone_loaded → bridge", flush=True)
+    from ..bootstrap import ensure_bridge_started
+
+    ensure_bridge_started()
+    return result
+
+
+VenueService.on_loading_screen_animation_finished = (  # type: ignore[method-assign]
+    _on_loading_screen_animation_finished
+)
