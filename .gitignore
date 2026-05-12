@@ -2,4 +2,6 @@ dist/
 
 __pycache__/
 
+.cursor/rules/
+
 .vscode/tasks.json
