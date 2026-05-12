@@ -13,7 +13,7 @@ export default defineConfig({
     emptyOutDir: true,
   },
   server: {
-    /** Hard-fixed; must match `sim_os.bootstrap._DEV_VITE_ORIGIN` (5173). */
+    /** Hard-fixed port for local panel dev (`panel dev`). */
     port: 5173,
     strictPort: true,
     proxy: {

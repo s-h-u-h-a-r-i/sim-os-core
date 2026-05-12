@@ -1,0 +1,61 @@
+/* Ported from sims_4_modding_old viewer mod-log.css (panel header chrome). */
+
+.mod-log-panel-header {
+  display: flex;
+  flex-direction: row;
+  align-items: flex-start;
+  justify-content: flex-start;
+  gap: var(--gap-sm);
+  padding: 0.65rem 1rem 0.55rem;
+  background: var(--grad-header-chrome);
+  border-bottom: 1px solid var(--border);
+}
+
+.mod-log-panel-title-block {
+  flex: 1;
+  min-width: 0;
+}
+
+.mod-log-title {
+  margin: 0 0 0.2rem;
+  font-size: var(--font-size-mod-log-title);
+  font-weight: var(--font-weight-strong);
+  color: var(--fg);
+  line-height: 1.2;
+}
+
+.mod-log-panel-sub {
+  margin: 0;
+  font-size: var(--font-size-body);
+  color: var(--muted);
+  line-height: 1.45;
+  font-weight: var(--font-weight-regular);
+}
+
+.mod-log-close-btn {
+  flex: 0 0 auto;
+  margin-left: auto;
+  min-width: 2.25rem;
+  min-height: 2.25rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: var(--font-size-close);
+  line-height: 1;
+  color: var(--muted);
+  background: var(--panel);
+  border: 2px solid var(--border-soft);
+  border-radius: var(--radius-widget);
+  cursor: pointer;
+  padding: 0;
+  transition:
+    color 0.15s,
+    background 0.15s,
+    border-color 0.15s;
+}
+
+.mod-log-close-btn:hover {
+  color: var(--fg);
+  background: var(--plumbob-tint);
+  border-color: var(--plumbob);
+}

@@ -1,7 +1,41 @@
-/* Minimal reset; Sims-4-adjacent theme is in src/theme/tokens.css */
+/* Ported from sims_4_modding_old viewer base.css — scrollbars + box model */
 
 *,
 *::before,
 *::after {
   box-sizing: border-box;
+  scrollbar-width: thin;
+  scrollbar-color: var(--plumbob) var(--panel-shade);
+}
+
+*::-webkit-scrollbar {
+  width: var(--scrollbar-size);
+  height: var(--scrollbar-size);
+}
+
+*::-webkit-scrollbar-track {
+  background: var(--grad-panel-track);
+  border-radius: var(--radius-full);
+  border: var(--border-2-soft);
+  box-shadow: var(--shadow-inset);
+}
+
+*::-webkit-scrollbar-thumb {
+  background: var(--grad-plumbob);
+  border-radius: var(--radius-full);
+  border: var(--border-2-plumbob);
+  box-shadow: var(--shadow-face);
+}
+
+*::-webkit-scrollbar-thumb:hover {
+  background: var(--grad-plumbob-hover);
+  border-color: var(--plumbob-deep);
+}
+
+*::-webkit-scrollbar-thumb:active {
+  background: var(--grad-plumbob-pressed);
+}
+
+*::-webkit-scrollbar-corner {
+  background: var(--cream-deep);
 }

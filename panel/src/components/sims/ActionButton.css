@@ -1,0 +1,60 @@
+/* Ported from sims_4_modding_old viewer sim-card.css — primary / secondary pills */
+
+.action-btn {
+  font-size: var(--font-size-sm);
+  font-family: inherit;
+  font-weight: var(--font-weight-strong);
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  padding: 0.4rem 0.75rem;
+  border-radius: var(--radius-full);
+  border: var(--border-2-plumbob);
+  background: var(--grad-plumbob);
+  color: #fff;
+  text-shadow: var(--text-shadow-btn);
+  cursor: pointer;
+  box-shadow: var(--shadow-btn-3d);
+  transition: var(--ease-btn);
+  appearance: none;
+  -webkit-appearance: none;
+}
+
+.action-btn--compact {
+  font-size: var(--font-size-tight);
+  padding: 0.32rem 0.65rem;
+  border-radius: var(--radius-widget);
+}
+
+.action-btn:hover {
+  filter: brightness(1.06);
+  box-shadow: var(--shadow-btn-3d-hover);
+}
+
+.action-btn:active {
+  transform: translateY(1px);
+  box-shadow: var(--shadow-btn-3d-active);
+}
+
+.action-btn--secondary {
+  background: var(--panel);
+  color: var(--plumbob-deep);
+  border-color: var(--plumbob);
+  box-shadow: none;
+  text-shadow: none;
+}
+
+.action-btn--secondary:hover {
+  background: var(--plumbob-tint);
+  filter: none;
+  box-shadow: none;
+}
+
+.action-btn--secondary:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.action-btn:focus-visible {
+  outline: 2px solid var(--warn);
+  outline-offset: 2px;
+}
