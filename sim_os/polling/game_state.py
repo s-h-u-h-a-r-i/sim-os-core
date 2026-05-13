@@ -8,9 +8,9 @@ import alarms
 from alarms import AlarmHandle
 from clock import interval_in_real_seconds
 
-from . import log_sink
-from .schemas.wire import world_state_to_wire
-from .sim_state import get_world_state
+from ..protocol import log_sink
+from ..subsystems.sims import get_world_state
+from ..subsystems.sims.wire import world_state_to_wire
 
 _POLL_REAL_SECONDS = 1.0
 
@@ -20,7 +20,6 @@ _started = False
 
 
 def start_game_state_logging() -> None:
-    """Begin repeating real-time polls that emit one log envelope per snapshot."""
     global _started, _alarm_owner, _probe_alarm
     if _started:
         return

@@ -7,7 +7,7 @@ import typing
 import services
 from sims.sim_info import SimInfo
 
-from ..schemas import QueuedInteraction, RunningInteraction, SerializedSim, WorldState
+from .models import QueuedInteraction, RunningInteraction, SerializedSim, WorldState
 from .instanced import get_instanced_sim_infos
 from .partner_wire import merge_shared_activity_object_partners_into_sims
 from .partners import social_partner_sim_ids

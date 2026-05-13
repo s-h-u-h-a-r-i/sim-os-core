@@ -7,7 +7,7 @@ import typing
 from interactions.base.super_interaction import SuperInteraction
 from sims.sim import Sim
 
-from ..schemas import QueuedInteraction, RunningInteraction
+from .models import QueuedInteraction, RunningInteraction
 
 
 def interactions_for_sim(

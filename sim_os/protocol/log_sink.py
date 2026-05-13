@@ -9,7 +9,7 @@ import json
 import queue
 import typing
 
-from .protocol import build_log_envelope
+from .envelope import build_log_envelope
 
 _sink: typing.Optional[queue.Queue[str]] = None
 
@@ -26,7 +26,6 @@ def emit(
     key: str,
     **fields: typing.Any,
 ) -> None:
-    """Record one log row (timestamp + level + source key + optional fields)."""
     if _sink is None:
         return
     envelope = build_log_envelope(level=level, key=key, message=message, **fields)

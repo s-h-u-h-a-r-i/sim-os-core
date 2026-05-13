@@ -6,7 +6,7 @@ import threading
 import typing
 from pathlib import Path
 
-from . import log_sink
+from .protocol import log_sink
 from .bridge.server import ModBridge
 
 _bridge: typing.Optional[ModBridge] = None
@@ -42,7 +42,7 @@ def ensure_bridge_started() -> typing.Optional[str]:
             key="sim_os.startup",
         )
 
-        from .state_poll import start_game_state_logging
+        from .polling import start_game_state_logging
 
         start_game_state_logging()
 

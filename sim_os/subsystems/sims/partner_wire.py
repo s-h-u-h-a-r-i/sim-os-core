@@ -7,7 +7,7 @@ import typing
 from interactions.base.super_interaction import SuperInteraction
 from sims.sim import Sim
 
-from ..schemas import SerializedSim
+from .models import SerializedSim
 from .filters import si_class_excluded_from_activity_object_merge
 from .instanced import get_instanced_sim_infos
 from .iteration import iter_actor_and_queue_super_interactions

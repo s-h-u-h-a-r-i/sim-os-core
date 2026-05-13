@@ -9,7 +9,6 @@ from sims.sim_info import SimInfo
 
 
 def get_instanced_sim_infos() -> typing.List[SimInfo]:
-    """Return SimInfo objects for all Sims currently instantiated in the zone."""
     manager = services.sim_info_manager()
     if manager is None:
         return []

@@ -101,7 +101,7 @@ def _ids_from_maybe_iterable(coll: typing.Any) -> typing.Iterable[int]:
     return out
 
 
-def _social_group_member_sim_ids(sg: typing.Any, self_sim_id: int) -> typing.Set[int]:
+def _social_group_member_sim_ids(sg: object | None, self_sim_id: int) -> typing.Set[int]:
     out: typing.Set[int] = set()
     if sg is None:
         return out
@@ -190,7 +190,7 @@ def _partner_ids_from_kwargs(si: SuperInteraction, self_sim_id: int) -> typing.S
     if not isinstance(kw, dict):
         return found
 
-    def _eat(obj: typing.Any, nest: int) -> None:
+    def _eat(obj: object | None, nest: int) -> None:
         if nest > 6:
             return
         sid = strict_partner_sim_id(obj)
