@@ -26,6 +26,16 @@ import zipfile
 from pathlib import Path
 from zipfile import PyZipFile
 
+
+def _bun_executable() -> str:
+    found = shutil.which("bun")
+    if found:
+        return found
+    fallback = Path("~/.bun/bin/bun").expanduser()
+    if fallback.is_file():
+        return str(fallback)
+    raise SystemExit("bun not found on PATH and not at ~/.bun/bin/bun")
+
 SCRIPT_DIR = Path(__file__).resolve().parent
 PROJECT_ROOT = SCRIPT_DIR.parent
 
@@ -48,7 +58,7 @@ def build_panel(dist_dir: Path, panel_dir: Path) -> Path:
         raise SystemExit(f"panel directory does not exist: {panel_dir}")
     dist_dir.mkdir(parents=True, exist_ok=True)
     subprocess.run(
-        ["bun", "run", "build"],
+        [_bun_executable(), "run", "build"],
         cwd=panel_dir,
         check=True,
     )
