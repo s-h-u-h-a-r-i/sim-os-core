@@ -6,7 +6,7 @@ Synced with panel expectations in ``panel/src/features/logs/types.ts``.
 from __future__ import annotations
 
 import time
-from typing import Any, TypedDict
+import typing
 
 # Prefer default port fallback in bridge; mirror in ``panel/vite.config.ts``.
 DEFAULT_BRIDGE_PORT = 8765
@@ -23,7 +23,7 @@ LOG_LEVEL_ERROR = "error"
 
 
 def build_log_envelope(
-    *, level: str, key: str, message: str, **fields: Any
+    *, level: str, key: str, message: str, **fields: typing.Any
 ) -> LogEnvelope:
     """One WebSocket UTF-8 JSON line describing a log row (RFC 7493 safe subset)."""
     env: LogEnvelope = {
@@ -52,7 +52,7 @@ def _normalize_log_level(level: str) -> str:
     return n if n in allowed else LOG_LEVEL_INFO
 
 
-class _LogEnvelopeBase(TypedDict):
+class _LogEnvelopeBase(typing.TypedDict):
     """Wire shape for ``WS_MSG_LOG`` (see ``panel RawLogEnvelope``)."""
 
     type: str
@@ -63,4 +63,4 @@ class _LogEnvelopeBase(TypedDict):
 
 
 class LogEnvelope(_LogEnvelopeBase, total=False):
-    fields: dict[str, Any]
+    fields: dict[str, typing.Any]
