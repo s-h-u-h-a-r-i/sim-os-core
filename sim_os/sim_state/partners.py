@@ -145,7 +145,7 @@ def _partner_ids_from_liabilities(
     si: SuperInteraction, self_sim_id: int
 ) -> typing.Set[int]:
     found: typing.Set[int] = set()
-    bag = getattr(si, "_liabilities", None)
+    bag = si._liabilities
     if bag is None:
         return found
     try:
@@ -186,7 +186,7 @@ def _partner_ids_from_liabilities(
 
 def _partner_ids_from_kwargs(si: SuperInteraction, self_sim_id: int) -> typing.Set[int]:
     found: typing.Set[int] = set()
-    kw = getattr(si, "_kwargs", None)
+    kw = si._kwargs
     if not isinstance(kw, dict):
         return found
 
@@ -218,16 +218,12 @@ def _partner_ids_from_super_interaction(
     found: typing.Set[int] = set()
     if si is None or depth > _PARTNER_GRAPH_MAX_DEPTH:
         return found
-    for attr in ("target", "interaction_target"):
-        try:
-            t = getattr(si, attr, None)
-        except Exception:
-            continue
+    for t in (si.target, si.interaction_target):
         sid = strict_partner_sim_id(t)
         if sid is not None and sid != self_sim_id:
             found.add(sid)
 
-    sg = getattr(si, "_social_group", None)
+    sg = si._social_group
     found |= _social_group_member_sim_ids(sg, self_sim_id)
     found |= _partner_ids_from_liabilities(si, self_sim_id)
     found |= _partner_ids_from_kwargs(si, self_sim_id)

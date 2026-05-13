@@ -9,3 +9,11 @@ class SuperInteraction:
 
     id: int
     target: typing.Optional[object]
+    interaction_target: typing.Optional[object]
+    _social_group: typing.Optional[object]
+    _liabilities: typing.Optional[typing.Iterable[object]]
+    _kwargs: typing.Optional[typing.Dict[str, object]]
+    _interactions: typing.Optional[typing.Iterable[SuperInteraction]]
+    interactions: typing.Optional[typing.Iterable[SuperInteraction]]
+    _mixer_interactions: typing.Optional[typing.Iterable[SuperInteraction]]
+    mixer_interactions: typing.Optional[typing.Iterable[SuperInteraction]]
