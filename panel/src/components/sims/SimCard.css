@@ -1,0 +1,126 @@
+.sim-card {
+  background: var(--panel);
+  border: 0.125rem solid var(--border);
+  border-radius: var(--radius-card);
+  box-shadow: var(--shadow-card);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  transition: var(--ease-card);
+}
+
+.sim-card:hover {
+  box-shadow: var(--shadow-card-hover);
+}
+
+.sim-card[data-instanced='false'] {
+  background: var(--cream-deep);
+  border-color: var(--border-soft);
+  box-shadow: none;
+  opacity: 0.7;
+}
+
+.sim-card[data-pinned='true'] {
+  border-color: var(--plumbob);
+  box-shadow: var(--shadow-card), 0 0 0 0.125rem var(--plumbob);
+}
+
+/* ── Header ── */
+
+.sim-card__header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: 0.65rem var(--gap-md) 0.6rem;
+}
+
+.sim-card__identity {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  min-width: 0;
+}
+
+.sim-card__name {
+  font-weight: var(--font-weight-strong);
+  font-size: 0.9375rem;
+  color: var(--fg);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.sim-card[data-instanced='false'] .sim-card__name {
+  color: var(--muted);
+}
+
+.sim-card__tags {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+}
+
+.sim-card__tag {
+  font-size: 0.65rem;
+  font-weight: var(--font-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.06em;
+  padding: 0.1rem 0.35rem;
+  border-radius: var(--radius-widget);
+  border: 0.0625rem solid;
+}
+
+.sim-card__tag--age {
+  color: var(--tag-age-fg);
+  border-color: var(--tag-age-border);
+  background: var(--tag-age-tint);
+}
+
+.sim-card__tag--npc {
+  color: var(--warn);
+  border-color: var(--tag-npc-border);
+  background: var(--warn-bg);
+}
+
+.sim-card__tag--away {
+  color: var(--muted);
+  border-color: var(--border);
+  background: var(--cream-deep);
+}
+
+/* ── Pin button ── */
+
+.sim-card__pin-btn {
+  flex-shrink: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 1.75rem;
+  height: 1.75rem;
+  border: none;
+  border-radius: var(--radius-widget);
+  background: transparent;
+  color: var(--muted);
+  cursor: pointer;
+  transition: var(--ease-btn);
+  padding: 0;
+}
+
+.sim-card__pin-btn:hover {
+  color: var(--plumbob-deep);
+  background: var(--plumbob-tint);
+}
+
+.sim-card__pin-btn[aria-pressed='true'] {
+  color: var(--plumbob-deep);
+}
+
+.sim-card__pin-btn:active {
+  transform: scale(0.92);
+}
+
+.sim-card__pin-btn:focus-visible {
+  outline: 0.125rem solid var(--plumbob);
+  outline-offset: 0.125rem;
+}

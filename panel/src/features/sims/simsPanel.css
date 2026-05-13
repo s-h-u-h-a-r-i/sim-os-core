@@ -1,0 +1,51 @@
+.sims-panel {
+  padding-bottom: 1rem;
+}
+
+.sims-panel .mod-log-panel-header {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.sims-panel__body {
+  padding: var(--gap-md);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.sims-panel__grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(17.5rem, 1fr));
+  gap: var(--gap-md);
+}
+
+.sims-panel__empty {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.sims-panel__section-divider {
+  display: flex;
+  align-items: center;
+  gap: var(--gap-sm);
+}
+
+.sims-panel__section-divider::before,
+.sims-panel__section-divider::after {
+  content: '';
+  flex: 1;
+  height: 0.0625rem;
+  background: var(--border-soft);
+}
+
+.sims-panel__section-label {
+  font-size: 0.7rem;
+  font-weight: var(--font-weight-strong);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  color: var(--muted);
+  white-space: nowrap;
+}
