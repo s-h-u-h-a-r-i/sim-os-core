@@ -12,8 +12,7 @@ import urllib.parse
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 
-from .. import log_sink
-from ..protocol import DEFAULT_BRIDGE_PORT
+from ..protocol import DEFAULT_BRIDGE_PORT, log_sink
 from . import ws_framing
 
 
@@ -52,7 +51,7 @@ class ModBridge:
     # --------------------------------------------------------------------- HTTP + WS ---
 
     def start(self) -> str:
-        """Bind HTTP+WS listener, attach :mod:`sim_os.log_sink`, return HTTP ``panel_url``.
+        """Bind HTTP+WS listener, attach :mod:`sim_os.protocol.log_sink`, return HTTP ``panel_url``.
 
         Safe to call once; repeats return the cached URL without rebinding.
         """

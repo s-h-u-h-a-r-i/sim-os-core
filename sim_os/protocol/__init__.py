@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+from . import log_sink
 from .constants import (
     DEFAULT_BRIDGE_PORT,
     LOG_LEVEL_DEBUG,
@@ -11,8 +12,7 @@ from .constants import (
     WS_MSG_LOG,
     WS_MSG_PING,
 )
-from .envelope import LogEnvelope, build_log_envelope
-from . import log_sink
+from .envelope import build_log_envelope
 
 __all__ = (
     "DEFAULT_BRIDGE_PORT",
@@ -22,7 +22,6 @@ __all__ = (
     "LOG_LEVEL_DEBUG",
     "LOG_LEVEL_WARN",
     "LOG_LEVEL_ERROR",
-    "LogEnvelope",
     "build_log_envelope",
     "log_sink",
 )

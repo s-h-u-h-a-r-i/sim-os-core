@@ -19,6 +19,10 @@ def attach_log_queue(q: queue.Queue[str]) -> None:
     _sink = q
 
 
+def is_ready() -> bool:
+    return _sink is not None
+
+
 def emit(
     message: str,
     *,

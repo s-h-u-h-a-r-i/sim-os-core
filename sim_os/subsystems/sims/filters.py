@@ -10,6 +10,11 @@ _FP_EXCLUDE_EXACT: frozenset[str] = frozenset(
         "stand_Passive",
         "sit_Passive",
         "SocialPickerSI",
+        "sim_stand",
+        "sim-stand",
+        "sim_sit",
+        "sim-sit",
+        "generic_kneel",
     }
 )
 _FP_EXCLUDE_PREFIXES: typing.Tuple[str, ...] = (
@@ -21,7 +26,7 @@ _FP_EXCLUDE_PREFIXES: typing.Tuple[str, ...] = (
 
 
 def si_class_excluded_from_activity_object_merge(class_name: str) -> bool:
-    if _si_class_is_background_noise(class_name):
+    if si_class_is_background_noise(class_name):
         return True
     nl = class_name.lower()
     compact = nl.replace("-", "").replace("_", "")
@@ -42,7 +47,7 @@ def si_class_excluded_from_activity_object_merge(class_name: str) -> bool:
     return False
 
 
-def _si_class_is_background_noise(class_name: str) -> bool:
+def si_class_is_background_noise(class_name: str) -> bool:
     return class_name in _FP_EXCLUDE_EXACT or class_name.startswith(
         _FP_EXCLUDE_PREFIXES
     )

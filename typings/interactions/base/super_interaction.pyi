@@ -4,10 +4,15 @@ from __future__ import annotations
 
 import typing
 
+from ..context import InteractionContext
+
 class SuperInteraction:
     """Runtime super interaction (minimal surface used by :mod:`sim_os.sim_state`)."""
 
     id: int
+    context: InteractionContext
+    allow_user_directed: bool
+    visible: bool
     target: typing.Optional[object]
     interaction_target: typing.Optional[object]
     _social_group: typing.Optional[object]

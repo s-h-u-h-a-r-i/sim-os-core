@@ -17,7 +17,7 @@ _PANEL_DIR = Path("~/Documents/Electronic Arts/The Sims 4/Mods/sim_os/sim_os_pan
 
 
 def ensure_bridge_started() -> typing.Optional[str]:
-    """Bind HTTP+WS listener, attach :mod:`~sim_os.log_sink`, emit startup logs."""
+    """Bind HTTP+WS listener, attach :mod:`~sim_os.protocol.log_sink`, emit startup logs."""
     global _bridge, _bridge_url
 
     with _bridge_lock:

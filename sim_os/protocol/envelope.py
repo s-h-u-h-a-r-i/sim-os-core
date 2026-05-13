@@ -13,17 +13,14 @@ from .constants import (
     WS_MSG_LOG,
 )
 
-
-class _LogEnvelopeBase(typing.TypedDict):
-    type: str
-    ts: float
-    level: str
-    key: str
-    message: str
-
-
-class LogEnvelope(_LogEnvelopeBase, total=False):
-    fields: typing.Dict[str, typing.Any]
+if typing.TYPE_CHECKING:
+    class LogEnvelope(typing.TypedDict, total=False):
+        type: str
+        ts: float
+        level: str
+        key: str
+        message: str
+        fields: typing.Dict[str, typing.Any]
 
 
 def build_log_envelope(
