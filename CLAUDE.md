@@ -1,5 +1,9 @@
 # Project instructions
 
+## Tooling
+
+- The panel (`panel/`) uses **Bun** as the package manager and runtime. Use `bun add`, `bun run build`, etc. — never `npm` or `yarn`.
+
 ## Code style
 
 - Prefer modular design: split implementations across focused, smaller files rather than accumulating unrelated code in monolithic files. At scale, organise by vertical domain slice (e.g. `subsystems/sims/`) rather than horizontal layer (e.g. separate `schemas/` and `sim_state/`).

@@ -1,0 +1,7 @@
+{
+  "include": ["sim_os", "typings"],
+  "stubPath": "typings",
+  "extraPaths": ["typings"],
+  "pythonVersion": "3.7",
+  "reportMissingModuleSource": "none"
+}
