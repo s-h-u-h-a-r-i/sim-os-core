@@ -3,6 +3,7 @@
 ## Tooling
 
 - The panel (`panel/`) uses **Bun** as the package manager and runtime. Use `bun add`, `bun run build`, etc. — never `npm` or `yarn`.
+- For `lucide-solid`, always use deep icon imports (e.g. `lucide-solid/icons/pin`) rather than barrel imports from `lucide-solid`.
 
 ## Code style
 
