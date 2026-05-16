@@ -1,4 +1,5 @@
 import { useCallback, useMemo, useState } from 'react';
+
 import type { PanelLogEntry } from './types';
 
 /**
@@ -7,7 +8,7 @@ import type { PanelLogEntry } from './types';
  */
 
 /** Rows kept in memory; tune for UI responsiveness vs. history length. */
-const PANEL_LOG_MAX_ENTRIES = 2000;
+const PANEL_LOG_MAX_ENTRIES = 1000;
 
 export interface InMemoryLogs {
   entries: readonly PanelLogEntry[];
