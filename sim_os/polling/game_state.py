@@ -24,10 +24,14 @@ _prev_active: typing.Dict[str, typing.FrozenSet[str]] = {}
 _prev_names: typing.Dict[str, str] = {}
 
 
-def start_game_state_logging() -> None:
+def ensure_game_state_polling(*, reset_baseline: bool = False) -> None:
     global _started, _alarm_owner, _probe_alarm
-    if _started:
+    if _started and not reset_baseline:
         return
+    if reset_baseline:
+        _prev_active.clear()
+        _prev_names.clear()
+
     _started = True
     _alarm_owner = _AlarmOwner()
     owner = _alarm_owner
@@ -40,9 +44,11 @@ def start_game_state_logging() -> None:
             _on_poll_fire,
             repeating=True,
             use_sleep_time=False,
+            cross_zone=True,
         )
     except Exception:
         _probe_alarm = None
+        _started = False
 
 
 def _cancel_probe() -> None:

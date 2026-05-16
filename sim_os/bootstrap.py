@@ -8,6 +8,7 @@ from pathlib import Path
 
 from .protocol import log_sink
 from .bridge.server import ModBridge
+from .polling import ensure_game_state_polling
 
 _bridge: typing.Optional[ModBridge] = None
 _bridge_url: typing.Optional[str] = None
@@ -22,6 +23,7 @@ def ensure_bridge_started() -> typing.Optional[str]:
 
     with _bridge_lock:
         if _bridge_url is not None:
+            ensure_game_state_polling(reset_baseline=True)
             return _bridge_url
 
         root = _resolve_static_root()
@@ -42,9 +44,7 @@ def ensure_bridge_started() -> typing.Optional[str]:
             key="sim_os.startup",
         )
 
-        from .polling import start_game_state_logging
-
-        start_game_state_logging()
+        ensure_game_state_polling()
 
         return panel_url
 

@@ -2,6 +2,6 @@
 
 from __future__ import annotations
 
-from .game_state import start_game_state_logging
+from .game_state import ensure_game_state_polling
 
-__all__ = ("start_game_state_logging",)
+__all__ = ("ensure_game_state_polling",)
