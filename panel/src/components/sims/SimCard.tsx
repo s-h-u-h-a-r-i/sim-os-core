@@ -1,3 +1,4 @@
+import { Show } from 'solid-js'
 import Pin from '../../icons/pin'
 import PinOff from '../../icons/pin-off'
 
@@ -12,47 +13,55 @@ export interface SimCardProps {
   onTogglePin: (simId: string) => void
 }
 
-export function SimCard({ sim, isPinned, onTogglePin }: SimCardProps) {
-  const activeInteractions = sim.interactions_running.filter((i) => i.category === 'active')
-  const passiveInteractions = sim.interactions_running.filter((i) => i.category === 'passive')
+export function SimCard(props: SimCardProps) {
+  const activeInteractions = () => props.sim.interactions_running.filter((i) => i.category === 'active')
+  const passiveInteractions = () => props.sim.interactions_running.filter((i) => i.category === 'passive')
 
   return (
     <article
-      className="sim-card"
-      data-instanced={sim.instanced ? 'true' : 'false'}
-      data-pinned={isPinned ? 'true' : 'false'}
+      class="sim-card"
+      data-instanced={props.sim.instanced ? 'true' : 'false'}
+      data-pinned={props.isPinned ? 'true' : 'false'}
     >
-      <header className="sim-card__header">
-        <div className="sim-card__identity">
-          <span className="sim-card__name">
-            {sim.first_name} {sim.last_name}
+      <header class="sim-card__header">
+        <div class="sim-card__identity">
+          <span class="sim-card__name">
+            {props.sim.first_name} {props.sim.last_name}
           </span>
-          <div className="sim-card__tags">
-            {sim.age && <span className="sim-card__tag sim-card__tag--age">{sim.age.replace('_', ' ')}</span>}
-            {sim.is_npc && <span className="sim-card__tag sim-card__tag--npc">NPC</span>}
-            {!sim.instanced && <span className="sim-card__tag sim-card__tag--away">Away</span>}
+          <div class="sim-card__tags">
+            <Show when={props.sim.age}>
+              <span class="sim-card__tag sim-card__tag--age">{props.sim.age?.replace('_', ' ')}</span>
+            </Show>
+            <Show when={props.sim.is_npc}>
+              <span class="sim-card__tag sim-card__tag--npc">NPC</span>
+            </Show>
+            <Show when={!props.sim.instanced}>
+              <span class="sim-card__tag sim-card__tag--away">Away</span>
+            </Show>
           </div>
         </div>
         <button
           type="button"
-          className="sim-card__pin-btn"
-          onClick={() => onTogglePin(sim.sim_id)}
-          aria-pressed={isPinned}
-          aria-label={isPinned ? 'Unpin sim' : 'Pin sim'}
+          class="sim-card__pin-btn"
+          onClick={() => props.onTogglePin(props.sim.sim_id)}
+          aria-pressed={props.isPinned}
+          aria-label={props.isPinned ? 'Unpin sim' : 'Pin sim'}
         >
-          {isPinned ? <PinOff size={15} /> : <Pin size={15} />}
+          <Show when={props.isPinned} fallback={<Pin size={15} />}>
+            <PinOff size={15} />
+          </Show>
         </button>
       </header>
 
-      {activeInteractions.length > 0 && (
-        <InteractionList label="Active" interactions={activeInteractions} variant="active" />
-      )}
-      {sim.interactions_queue.length > 0 && (
-        <InteractionList label="Planned" interactions={sim.interactions_queue} variant="queued" />
-      )}
-      {passiveInteractions.length > 0 && (
-        <InteractionList label="Passive" interactions={passiveInteractions} variant="passive" />
-      )}
+      <Show when={activeInteractions().length > 0}>
+        <InteractionList label="Active" interactions={activeInteractions()} variant="active" />
+      </Show>
+      <Show when={props.sim.interactions_queue.length > 0}>
+        <InteractionList label="Planned" interactions={props.sim.interactions_queue} variant="queued" />
+      </Show>
+      <Show when={passiveInteractions().length > 0}>
+        <InteractionList label="Passive" interactions={passiveInteractions()} variant="passive" />
+      </Show>
     </article>
   )
 }

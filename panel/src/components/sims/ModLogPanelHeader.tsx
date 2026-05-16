@@ -1,20 +1,21 @@
-import type { ReactNode } from 'react'
+import { Show, type JSXElement } from 'solid-js'
 
 import './ModLogPanelHeader.css'
 
 export interface ModLogPanelHeaderProps {
   readonly title: string
-  /** Inline actions (e.g. clear, filters, count) — same row as title. */
-  readonly toolbar?: ReactNode
+  readonly toolbar?: JSXElement
 }
 
-export function ModLogPanelHeader({ title, toolbar }: ModLogPanelHeaderProps) {
+export function ModLogPanelHeader(props: ModLogPanelHeaderProps) {
   return (
-    <div className="mod-log-panel-header">
-      <div className="mod-log-panel-title-block">
-        <h1>{title}</h1>
+    <div class="mod-log-panel-header">
+      <div class="mod-log-panel-title-block">
+        <h1>{props.title}</h1>
       </div>
-      {toolbar != null ? <div className="mod-log-panel-actions">{toolbar}</div> : null}
+      <Show when={props.toolbar != null}>
+        <div class="mod-log-panel-actions">{props.toolbar}</div>
+      </Show>
     </div>
   )
 }

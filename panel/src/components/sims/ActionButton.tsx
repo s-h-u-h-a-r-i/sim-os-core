@@ -1,10 +1,10 @@
-import type { ButtonHTMLAttributes } from 'react'
+import type { JSX } from 'solid-js'
 
 import './ActionButton.css'
 
 export type ActionButtonVariant = 'primary' | 'secondary'
 
-export interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
+export interface ActionButtonProps extends JSX.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ActionButtonVariant
   compact?: boolean
 }
@@ -12,7 +12,7 @@ export interface ActionButtonProps extends ButtonHTMLAttributes<HTMLButtonElemen
 export function ActionButton({
   variant = 'primary',
   compact = false,
-  className,
+  class: className,
   type = 'button',
   ...rest
 }: ActionButtonProps) {
@@ -24,5 +24,6 @@ export function ActionButton({
   ]
     .filter(Boolean)
     .join(' ')
-  return <button type={type} className={classes} {...rest} />
+
+  return <button type={type} class={classes} {...rest} />
 }

@@ -1,1 +1,1 @@
-export { PinOff as default } from 'lucide-react'
+export { default } from 'lucide-solid/icons/pin-off'

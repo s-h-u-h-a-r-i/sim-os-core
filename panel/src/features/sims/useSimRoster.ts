@@ -1,15 +1,16 @@
-import { useCallback, useMemo, useState } from 'react'
+import { createMemo, createSignal } from 'solid-js'
+import type { Accessor } from 'solid-js'
 import type { TrackedSim, WorldStateWire } from './types'
 
 export interface SimRoster {
-  instanced: TrackedSim[]
-  offInstance: TrackedSim[]
+  instanced: Accessor<TrackedSim[]>
+  offInstance: Accessor<TrackedSim[]>
 }
 
 export function useSimRoster(): SimRoster & { handleWorldState: (state: WorldStateWire) => void } {
-  const [simMap, setSimMap] = useState<ReadonlyMap<string, TrackedSim>>(new Map())
+  const [simMap, setSimMap] = createSignal<ReadonlyMap<string, TrackedSim>>(new Map())
 
-  const handleWorldState = useCallback((state: WorldStateWire) => {
+  const handleWorldState = (state: WorldStateWire) => {
     setSimMap((prev) => {
       const next = new Map(prev)
       for (const [id, sim] of next) {
@@ -20,17 +21,11 @@ export function useSimRoster(): SimRoster & { handleWorldState: (state: WorldSta
       }
       return next
     })
-  }, [])
+  }
 
-  const instanced = useMemo(
-    () => [...simMap.values()].filter((s) => s.instanced),
-    [simMap],
-  )
+  const instanced = createMemo(() => [...simMap().values()].filter((s) => s.instanced))
 
-  const offInstance = useMemo(
-    () => [...simMap.values()].filter((s) => !s.instanced),
-    [simMap],
-  )
+  const offInstance = createMemo(() => [...simMap().values()].filter((s) => !s.instanced))
 
   return { instanced, offInstance, handleWorldState }
 }

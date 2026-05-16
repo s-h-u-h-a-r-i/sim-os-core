@@ -1,4 +1,4 @@
-/** Structured log rows — kept only in React state (never persisted here). */
+/** Structured log rows — kept only in panel memory (never persisted here). */
 
 export type LogLevel = 'info' | 'debug' | 'warn' | 'error'
 

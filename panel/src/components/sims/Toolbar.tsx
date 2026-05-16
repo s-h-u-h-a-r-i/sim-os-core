@@ -1,29 +1,25 @@
-import type { ReactNode } from 'react';
+import type { JSXElement } from 'solid-js'
 
-import './Toolbar.css';
+import './Toolbar.css'
 
-export function ModLogToolbarBtns({ children }: { children: ReactNode }) {
-  return <div className='mod-log-toolbar-btns'>{children}</div>;
+export function ModLogToolbarBtns(props: { children: JSXElement }) {
+  return <div class="mod-log-toolbar-btns">{props.children}</div>
 }
 
-export function ToolbarField({
-  label,
-  children,
-  disabled = false,
-}: {
-  label: string;
-  children: ReactNode;
-  disabled?: boolean;
+export function ToolbarField(props: {
+  label: string
+  children: JSXElement
+  disabled?: boolean
 }) {
-  const cls = ['toolbar-field', disabled && 'toolbar-field--disabled'].filter(Boolean).join(' ');
+  const cls = ['toolbar-field', props.disabled && 'toolbar-field--disabled'].filter(Boolean).join(' ')
   return (
-    <div className={cls}>
-      <span className='toolbar-label'>{label}</span>
-      {children}
+    <div class={cls}>
+      <span class="toolbar-label">{props.label}</span>
+      {props.children}
     </div>
-  );
+  )
 }
 
-export function ModLogCount({ children }: { children: ReactNode }) {
-  return <span className='mod-log-count'>{children}</span>;
+export function ModLogCount(props: { children: JSXElement }) {
+  return <span class="mod-log-count">{props.children}</span>
 }

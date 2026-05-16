@@ -1,3 +1,5 @@
+import { For, Show } from 'solid-js'
+
 import type { QueuedInteractionWire, RunningInteractionWire } from '../../features/sims/types'
 import { formatInteractionName } from '../../features/sims/interactionUtils'
 
@@ -11,19 +13,21 @@ export interface InteractionListProps {
   variant: InteractionListVariant
 }
 
-export function InteractionList({ label, interactions, variant }: InteractionListProps) {
+export function InteractionList(props: InteractionListProps) {
   return (
-    <section className="interaction-list" data-variant={variant}>
-      <span className="interaction-list__label">{label}</span>
-      <ul className="interaction-list__items">
-        {interactions.map((i) => (
-          <li key={i.interaction_id_str} className="interaction-list__item">
-            {formatInteractionName(i.class_name)}
-            {'source_name' in i && (
-              <span className="interaction-list__source">{i.source_name}</span>
-            )}
-          </li>
-        ))}
+    <section class="interaction-list" data-variant={props.variant}>
+      <span class="interaction-list__label">{props.label}</span>
+      <ul class="interaction-list__items">
+        <For each={props.interactions}>
+          {(i) => (
+            <li class="interaction-list__item">
+              {formatInteractionName(i.class_name)}
+              <Show when={'source_name' in i}>
+                <span class="interaction-list__source">{(i as RunningInteractionWire).source_name}</span>
+              </Show>
+            </li>
+          )}
+        </For>
       </ul>
     </section>
   )

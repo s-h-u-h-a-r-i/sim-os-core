@@ -1,4 +1,4 @@
-import { useMemo } from 'react'
+import { For, Show, createMemo } from 'solid-js'
 import { ModLogCount, ModLogPanelHeader, SimCard } from '../../components/sims'
 import type { TrackedSim } from './types'
 import { useSimPins } from './useSimPins'
@@ -21,53 +21,46 @@ export default function SimsPanel() {
   const { pinnedIds, togglePin } = useSimPins()
   useWorldStateStream(handleWorldState)
 
-  const sortedInstanced = useMemo(
-    () => sortSims(instanced, pinnedIds),
-    [instanced, pinnedIds],
-  )
+  const sortedInstanced = createMemo(() => sortSims(instanced(), pinnedIds()))
 
-  const sortedOffInstance = useMemo(
-    () => sortSims(offInstance, pinnedIds),
-    [offInstance, pinnedIds],
-  )
+  const sortedOffInstance = createMemo(() => sortSims(offInstance(), pinnedIds()))
 
   return (
-    <main className="sims-panel">
+    <main class="sims-panel">
       <ModLogPanelHeader
         title="Sims"
-        toolbar={<ModLogCount>{instanced.length} on lot</ModLogCount>}
+        toolbar={<ModLogCount>{instanced().length} on lot</ModLogCount>}
       />
-      <div className="sims-panel__body">
-        {sortedInstanced.length === 0 && sortedOffInstance.length === 0 ? (
-          <p className="sims-panel__empty">No sims on lot</p>
-        ) : null}
-        <div className="sims-panel__grid">
-          {sortedInstanced.map((s) => (
-            <SimCard
-              key={s.sim_id}
-              sim={s}
-              isPinned={pinnedIds.has(s.sim_id)}
-              onTogglePin={togglePin}
-            />
-          ))}
-        </div>
-        {sortedOffInstance.length > 0 && (
-          <>
-            <div className="sims-panel__section-divider">
-              <span className="sims-panel__section-label">Off Lot</span>
-            </div>
-            <div className="sims-panel__grid">
-              {sortedOffInstance.map((s) => (
+      <div class="sims-panel__body">
+        <Show when={sortedInstanced().length > 0 || sortedOffInstance().length > 0} fallback={<p class="sims-panel__empty">No sims on lot</p>}>
+          <div class="sims-panel__grid">
+            <For each={sortedInstanced()}>
+              {(s) => (
                 <SimCard
-                  key={s.sim_id}
                   sim={s}
-                  isPinned={pinnedIds.has(s.sim_id)}
+                  isPinned={pinnedIds().has(s.sim_id)}
                   onTogglePin={togglePin}
                 />
-              ))}
+              )}
+            </For>
+          </div>
+          <Show when={sortedOffInstance().length > 0}>
+            <div class="sims-panel__section-divider">
+              <span class="sims-panel__section-label">Off Lot</span>
             </div>
-          </>
-        )}
+            <div class="sims-panel__grid">
+              <For each={sortedOffInstance()}>
+                {(s) => (
+                  <SimCard
+                    sim={s}
+                    isPinned={pinnedIds().has(s.sim_id)}
+                    onTogglePin={togglePin}
+                  />
+                )}
+              </For>
+            </div>
+          </Show>
+        </Show>
       </div>
     </main>
   )

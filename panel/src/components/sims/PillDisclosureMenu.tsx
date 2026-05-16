@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from 'react'
+import { For, Show, createMemo, createSignal, onCleanup, createEffect } from 'solid-js'
 
 import './PillDisclosureMenu.css'
 
@@ -14,74 +14,72 @@ export interface PillDisclosureMenuProps<T extends string> {
   readonly listboxAriaLabel: string
 }
 
-export function PillDisclosureMenu<T extends string>({
-  options,
-  value,
-  onChange,
-  listboxAriaLabel,
-}: PillDisclosureMenuProps<T>) {
-  const [open, setOpen] = useState(false)
-  const rootRef = useRef<HTMLDivElement>(null)
+export function PillDisclosureMenu<T extends string>(props: PillDisclosureMenuProps<T>) {
+  const [open, setOpen] = createSignal(false)
+  let rootRef: HTMLDivElement | undefined
 
-  const selectedLabel =
-    options.find((o) => o.value === value)?.label ?? String(value)
+  const selectedLabel = createMemo(
+    () => props.options.find((o) => o.value === props.value)?.label ?? String(props.value),
+  )
 
-  useEffect(() => {
-    if (!open) {
+  createEffect(() => {
+    if (!open()) {
       return
     }
     function onDocMouseDown(e: MouseEvent) {
-      const el = rootRef.current
+      const el = rootRef
       if (el && !el.contains(e.target as Node)) {
         setOpen(false)
       }
     }
     document.addEventListener('mousedown', onDocMouseDown)
-    return () => document.removeEventListener('mousedown', onDocMouseDown)
-  }, [open])
+    onCleanup(() => document.removeEventListener('mousedown', onDocMouseDown))
+  })
 
   return (
     <div
       ref={rootRef}
-      className="sims-pill-disclosure"
-      data-open={open ? 'true' : 'false'}
+      class="sims-pill-disclosure"
+      data-open={open() ? 'true' : 'false'}
     >
       <button
         type="button"
-        className="sims-pill-disclosure__trigger"
-        aria-expanded={open}
+        class="sims-pill-disclosure__trigger"
+        aria-expanded={open()}
         aria-haspopup="listbox"
         onClick={() => setOpen((o) => !o)}
       >
-        <span className="sims-pill-disclosure__value">{selectedLabel}</span>
-        <span className="sims-pill-disclosure__chevron" aria-hidden>
+        <span class="sims-pill-disclosure__value">{selectedLabel()}</span>
+        <span class="sims-pill-disclosure__chevron" aria-hidden>
           &#9660;
         </span>
       </button>
-      {open ? (
+      <Show when={open()}>
         <ul
-          className="sims-pill-disclosure__menu"
+          class="sims-pill-disclosure__menu"
           role="listbox"
-          aria-label={listboxAriaLabel}
+          aria-label={props.listboxAriaLabel}
         >
-          {options.map((opt) => (
-            <li key={opt.value} role="none">
-              <button
-                type="button"
-                className="sims-pill-disclosure__option"
-                role="option"
-                aria-selected={value === opt.value}
-                onClick={() => {
-                  onChange(opt.value)
-                  setOpen(false)
-                }}
-              >
-                {opt.label}
-              </button>
-            </li>
-          ))}
+          <For each={props.options}>
+            {(opt) => (
+              <li role="none">
+                <button
+                  type="button"
+                  class="sims-pill-disclosure__option"
+                  role="option"
+                  aria-selected={props.value === opt.value}
+                  onClick={() => {
+                    props.onChange(opt.value)
+                    setOpen(false)
+                  }}
+                >
+                  {opt.label}
+                </button>
+              </li>
+            )}
+          </For>
         </ul>
-      ) : null}
+      </Show>
     </div>
   )
 }

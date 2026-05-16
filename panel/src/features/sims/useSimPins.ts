@@ -1,4 +1,6 @@
-import { useCallback, useState } from 'react'
+import { createSignal } from 'solid-js'
+
+import type { Accessor } from 'solid-js'
 
 const STORAGE_KEY = 'sim_os_pinned_sims'
 
@@ -20,10 +22,10 @@ function savePins(pins: Set<string>): void {
   }
 }
 
-export function useSimPins(): { pinnedIds: ReadonlySet<string>; togglePin: (simId: string) => void } {
-  const [pinnedIds, setPinnedIds] = useState<ReadonlySet<string>>(loadPins)
+export function useSimPins(): { pinnedIds: Accessor<ReadonlySet<string>>; togglePin: (simId: string) => void } {
+  const [pinnedIds, setPinnedIds] = createSignal<ReadonlySet<string>>(loadPins())
 
-  const togglePin = useCallback((simId: string) => {
+  const togglePin = (simId: string) => {
     setPinnedIds((prev) => {
       const next = new Set(prev)
       if (next.has(simId)) {
@@ -34,7 +36,7 @@ export function useSimPins(): { pinnedIds: ReadonlySet<string>; togglePin: (simI
       savePins(next)
       return next
     })
-  }, [])
+  }
 
   return { pinnedIds, togglePin }
 }

@@ -1,4 +1,4 @@
-import { useEffect, useRef } from 'react'
+import { onCleanup, onMount } from 'solid-js'
 
 const MAX_BACKOFF_MS = 30_000
 
@@ -8,16 +8,10 @@ function nextBackoffMs(attempt: number): number {
 
 /**
  * Low-level WebSocket connection to same-origin ``/ws`` with exponential backoff reconnect.
- * Calls ``onMessage`` for every non-ping JSON frame; ref-stabilised so callers need not memoise.
+ * Calls ``onMessage`` for every non-ping JSON frame.
  */
 export function useWsRawStream(onMessage: (raw: unknown) => void): void {
-  const onMessageRef = useRef(onMessage)
-
-  useEffect(() => {
-    onMessageRef.current = onMessage
-  }, [onMessage])
-
-  useEffect(() => {
+  onMount(() => {
     const proto = window.location.protocol === 'https:' ? 'wss:' : 'ws:'
     const url = `${proto}//${window.location.host}/ws`
 
@@ -67,7 +61,7 @@ export function useWsRawStream(onMessage: (raw: unknown) => void): void {
         if (typeof raw === 'object' && raw !== null && (raw as { type?: string }).type === 'ping') {
           return
         }
-        onMessageRef.current(raw)
+        onMessage(raw)
       }
 
       myWs.onclose = () => {
@@ -79,13 +73,13 @@ export function useWsRawStream(onMessage: (raw: unknown) => void): void {
 
     connect()
 
-    return () => {
+    onCleanup(() => {
       cancelled = true
       clearTimers()
       const s = ws
       ws = null
       if (!s) return
       if (s.readyState === WebSocket.OPEN) s.close()
-    }
-  }, [])
+    })
+  })
 }
